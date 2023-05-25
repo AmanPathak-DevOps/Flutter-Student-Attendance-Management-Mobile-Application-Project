@@ -23,7 +23,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   late String _selectedRole;
-  final List<String> _roles = ['Teacher', 'Student'];
+  final List<String> _roles = ['Select', 'Teacher', 'Student'];
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _rollNumberController = TextEditingController();
@@ -228,18 +228,30 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Sign Up As',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
+            Container(
+              width: MediaQuery.of(context).size.width * 0.2,
+              height: 30.0,
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Center(
+                child: Text(
+                  'Sign Up As',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 18.0,
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 8.0),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
-                color: Colors.red, // Set the background color
+                // Set the background color
+                color: Colors.white,
               ),
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: DropdownButton<String>(
@@ -251,7 +263,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: Text(
                       value,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                     ),
                   );
@@ -373,9 +385,22 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Date of Birth',
                   hintText: 'Select date of birth',
                 ),
-                onTap: () {
+                onTap: () async {
                   // Show calendar or date picker
                   // ...
+                  await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  ).then((pickedDate) {
+                    if (pickedDate != null) {
+                      setState(() {
+                        _dateOfBirthController.text =
+                            pickedDate.toString().split(' ')[0];
+                      });
+                    }
+                  });
                 },
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -454,9 +479,12 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ],
             SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _submitSignUpForm,
-              child: Text('Sign Up'),
+            Visibility(
+              visible: _selectedRole != 'Select',
+              child: ElevatedButton(
+                onPressed: _submitSignUpForm,
+                child: Text('Sign Up'),
+              ),
             ),
           ],
         ),
