@@ -11,6 +11,7 @@ class SignUpScreen extends StatelessWidget {
       title: 'SignUp App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        // Image.asset('assets/images/signup.jpg')
       ),
       debugShowCheckedModeBanner: false, // Hide the debug banner
       home: SignUpPage(),
@@ -292,22 +293,56 @@ class _SignUpPageState extends State<SignUpPage> {
         // Perform signup logic for teacher
         // ...
 
-        // Navigate to the LoginApp
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginApp()),
+        // Show SignUp successful popup
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('SignUp Successful'),
+              content: Text('Redirecting to the LogIn Page'),
+            );
+          },
         );
+
+        // Delay for three seconds
+        Future.delayed(Duration(seconds: 3), () {
+          // Dismiss the popup
+          Navigator.pop(context);
+
+          // Navigate to the LoginApp
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginApp()),
+          );
+        });
       }
     } else if (_selectedRole == 'Student') {
       if (_validateStudentDetails()) {
         // Perform signup logic for student
         // ...
 
-        // Navigate to the LoginApp
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginApp()),
+        // Show SignUp successful popup
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('SignUp Successful'),
+              content: Text('Redirecting to the LogIn Page'),
+            );
+          },
         );
+
+        // Delay for three seconds
+        Future.delayed(Duration(seconds: 3), () {
+          // Dismiss the popup
+          Navigator.pop(context);
+
+          // Navigate to the LoginApp
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginApp()),
+          );
+        });
       }
     }
 
@@ -589,11 +624,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         builder: (context) => AlertDialog(
                           title: Text('Sign Up Successful'),
                         ),
-                      );
-                      await Future.delayed(Duration(seconds: 3));
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginApp()),
                       );
                     }
                   },
