@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'LogIn.dart';
+
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
@@ -205,16 +207,111 @@ class _SignUpPageState extends State<SignUpPage> {
     return true;
   }
 
-  void _submitSignUpForm() {
+  bool _validateTeacherDetails() {
+    // Validate teacher details
+    final String name = _nameController.text.trim();
+    final String mobile = _mobileController.text.trim();
+    final String email = _emailController.text.trim();
+
+    if (name.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Please enter teacher name.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return false;
+    }
+
+    if (mobile.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Please enter mobile number.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return false;
+    }
+
+    // Perform additional validation for mobile number
+    // ...
+
+    if (email.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Please enter email id.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return false;
+    }
+
+    // Perform additional validation for email format
+    // ...
+
+    // All teacher details are valid
+    return true;
+  }
+
+  bool _submitSignUpForm() {
     if (_selectedRole == 'Teacher') {
-      // Perform signup logic for teacher
-      // ...
+      if (_validateTeacherDetails()) {
+        // Perform signup logic for teacher
+        // ...
+
+        // Navigate to the LoginApp
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginApp()),
+        );
+      }
     } else if (_selectedRole == 'Student') {
       if (_validateStudentDetails()) {
         // Perform signup logic for student
         // ...
+
+        // Navigate to the LoginApp
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginApp()),
+        );
       }
     }
+
+    return false;
   }
 
   @override
@@ -481,9 +578,35 @@ class _SignUpPageState extends State<SignUpPage> {
             SizedBox(height: 16.0),
             Visibility(
               visible: _selectedRole != 'Select',
-              child: ElevatedButton(
-                onPressed: _submitSignUpForm,
-                child: Text('Sign Up'),
+              child: Container(
+                width: 150, // Adjust the width value as per your requirement
+                child: ElevatedButton(
+                  onPressed: () async {
+                    bool isValid = _submitSignUpForm();
+                    if (isValid) {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Sign Up Successful'),
+                        ),
+                      );
+                      await Future.delayed(Duration(seconds: 3));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginApp()),
+                      );
+                    }
+                  },
+                  child: Text('Sign Up'),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 2.0, // Adjust the horizontal padding value
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
