@@ -279,70 +279,73 @@ class _SignUpPageState extends State<SignUpPage> {
       );
       return false;
     }
-
-    // Perform additional validation for email format
-    // ...
-
-    // All teacher details are valid
     return true;
   }
 
   bool _submitSignUpForm() {
     if (_selectedRole == 'Teacher') {
       if (_validateTeacherDetails()) {
+        showDialog(
+          context: context,
+          barrierDismissible:
+              true, // Prevent dismissing the dialog on tap outside
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Signing Up'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(), // Show circular progress indicator
+                  SizedBox(height: 16.0),
+                  Text('Please wait...'),
+                ],
+              ),
+            );
+          },
+        );
         // Perform signup logic for teacher
         // ...
 
-        // Show SignUp successful popup
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('SignUp Successful'),
-              content: Text('Redirecting to the LogIn Page'),
-            );
-          },
+        // Dismiss the popup
+        Navigator.pop(context);
+
+        // Navigate to the LoginApp
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginApp()),
         );
-
-        // Delay for three seconds
-        Future.delayed(Duration(seconds: 3), () {
-          // Dismiss the popup
-          Navigator.pop(context);
-
-          // Navigate to the LoginApp
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => LoginApp()),
-          );
-        });
       }
     } else if (_selectedRole == 'Student') {
       if (_validateStudentDetails()) {
-        // Perform signup logic for student
-        // ...
-
-        // Show SignUp successful popup
         showDialog(
           context: context,
+          barrierDismissible:
+              true, // Prevent dismissing the dialog on tap outside
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('SignUp Successful'),
-              content: Text('Redirecting to the LogIn Page'),
+              title: Text('Signing Up'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(), // Show circular progress indicator
+                  SizedBox(height: 16.0),
+                  Text('Please wait...'),
+                ],
+              ),
             );
           },
         );
+        // Perform signup logic for student
+        // ...
 
-        // Delay for three seconds
-        Future.delayed(Duration(seconds: 3), () {
-          // Dismiss the popup
-          Navigator.pop(context);
+        // Dismiss the popup
+        Navigator.pop(context);
 
-          // Navigate to the LoginApp
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => LoginApp()),
-          );
-        });
+        // Navigate to the LoginApp
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginApp()),
+        );
       }
     }
 
