@@ -1,44 +1,26 @@
 {
   "project_info": {
-    "project_number": "970095962540",
-    "project_id": "student-attendance-syste-72afe",
-    "storage_bucket": "student-attendance-syste-72afe.appspot.com"
+    "project_number": "812865989450",
+    "project_id": "attendance-management-sy-25109",
+    "storage_bucket": "attendance-management-sy-25109.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:970095962540:android:3d8af91d12d5affe377209",
+        "mobilesdk_app_id": "1:812865989450:android:b57a389a56e5dc9b5cafb3",
         "android_client_info": {
-          "package_name": "com.aman.attendanceapp.attendancesystem"
+          "package_name": "com.aman.attendance_student"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "970095962540-6mt49a4cunnpf5tejoc0v5ucun9mhf6g.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.aman.attendanceapp.attendancesystem",
-            "certificate_hash": "8f9f5bb66e025fab2ab0c011e2108741bead3939"
-          }
-        },
-        {
-          "client_id": "970095962540-ikti7rstppuhj47p5v0lb79f0mau01s9.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAi_-u4t6twMXy0ywKku3IGpa07ev-fhMw"
+          "current_key": "AIzaSyCGXgcnWgqHJwM1kH6TpACfvsGdNYx9cSk"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "970095962540-ikti7rstppuhj47p5v0lb79f0mau01s9.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
