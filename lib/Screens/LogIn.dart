@@ -1,14 +1,80 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:login_signup/Screens/Reset_Password.dart';
 import 'SignUp.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 void main() {
   runApp(LoginApp());
 }
 
+// ignore: must_be_immutable
 class LoginApp extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isPasswordVisible = false;
+
+  LoginApp({super.key});
+
+  // void login(BuildContext context) {
+  //   String userID = usernameController.text;
+  //   String password = passwordController.text;
+
+  //   FirebaseFirestore.instance
+  //       .collection('Staff_details')
+  //       .where('Teacher_ID', isEqualTo: userID)
+  //       .where('teacher_password', isEqualTo: password)
+  //       .get()
+  //       .then((QuerySnapshot snapshot) {
+  //     if (snapshot.docs.isNotEmpty) {
+  //       // User ID and password matched, proceed to next page
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => ResetPasswordPage(),
+  //         ),
+  //       );
+  //     } else {
+  //       // User ID and/or password did not match
+  //       showDialog(
+  //         context: context,
+  //         builder: (BuildContext context) {
+  //           return AlertDialog(
+  //             title: Text('Login Failed'),
+  //             content: Text('Invalid user ID or password.'),
+  //             actions: [
+  //               TextButton(
+  //                 onPressed: () {
+  //                   Navigator.pop(context);
+  //                 },
+  //                 child: Text('OK'),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     }
+  //   }).catchError((error) {
+  //     // Error occurred while querying the database
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: Text('Error'),
+  //           content: Text('An error occurred. Please try again later.'),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //               child: Text('OK'),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +121,7 @@ class LoginApp extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                         decoration: InputDecoration(
-                          labelText: 'Username',
+                          labelText: 'User ID',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16.0),
                           ),
@@ -74,25 +140,36 @@ class LoginApp extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: 8.0),
                       child: TextField(
                         controller: passwordController,
+                        obscureText: isPasswordVisible,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                         decoration: InputDecoration(
-                          labelText: 'Password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16.0),
-                          ),
-                          labelStyle: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          prefixIcon: Icon(
-                            Icons.lock,
-                            color: Colors.white,
-                          ),
-                        ),
-                        obscureText: true,
+                            labelText: 'Password',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            labelStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.lock,
+                              color: Colors.white,
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                isPasswordVisible = !isPasswordVisible;
+                                FocusScope.of(context).unfocus();
+                              },
+                              icon: Icon(
+                                isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.white,
+                              ),
+                            )),
                       ),
                     ),
                     SizedBox(height: 16.0),
