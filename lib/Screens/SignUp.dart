@@ -416,6 +416,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'Teacher Name',
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                   hintText: 'Enter teacher name',
                 ),
                 keyboardType: TextInputType.text,
@@ -432,6 +436,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: _mobileController,
                 decoration: InputDecoration(
                   labelText: 'Mobile Number',
+                  prefixIcon: Icon(Icons.phone),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                   hintText: 'Enter mobile number',
                 ),
                 keyboardType: TextInputType.phone,
@@ -450,6 +458,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email ID',
+                  prefixIcon: Icon(Icons.mail),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                   hintText: 'Enter email id',
                 ),
                 keyboardType: TextInputType.emailAddress,
@@ -468,6 +480,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'Student Name',
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                   hintText: 'Enter student name',
                 ),
                 keyboardType: TextInputType.text,
@@ -484,6 +500,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: _rollNumberController,
                 decoration: InputDecoration(
                   labelText: 'Roll Number',
+                  prefixIcon: Icon(Icons.plus_one),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                   hintText: 'Enter roll number',
                 ),
                 keyboardType: TextInputType.number,
@@ -503,6 +523,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 decoration: InputDecoration(
                   labelText: "Father's Name",
                   hintText: "Enter father's name",
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                 ),
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
@@ -518,6 +542,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: _dateOfBirthController,
                 decoration: InputDecoration(
                   labelText: 'Date of Birth',
+                  prefixIcon: Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                   hintText: 'Select date of birth',
                 ),
                 onTap: () async {
@@ -545,13 +573,24 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
               ),
               SizedBox(height: 8.0),
-              DropdownButton<String>(
+              DropdownButtonFormField<String>(
                 isExpanded: true,
                 value: _selectedGender,
                 items: _genderOptions.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.group,
+                          // Add any additional styling properties for the icon if needed
+                        ),
+                        SizedBox(
+                            width:
+                                10), // Adjust the spacing between the icon and the text
+                        Text(value),
+                      ],
+                    ),
                   );
                 }).toList(),
                 onChanged: (String? value) {
@@ -559,12 +598,21 @@ class _SignUpPageState extends State<SignUpPage> {
                     _selectedGender = value!;
                   });
                 },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
               ),
               SizedBox(height: 8.0),
               TextFormField(
                 controller: _mobileController,
                 decoration: InputDecoration(
                   labelText: 'Mobile Number',
+                  prefixIcon: Icon(Icons.dialpad),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                   hintText: 'Enter mobile number',
                 ),
                 keyboardType: TextInputType.phone,
@@ -579,13 +627,24 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
               ),
               SizedBox(height: 8.0),
-              DropdownButton<String>(
+              DropdownButtonFormField<String>(
                 isExpanded: true,
                 value: _selectedClass,
                 items: _classOptions.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.school,
+                          // Add any additional styling properties for the icon if needed
+                        ),
+                        SizedBox(
+                            width:
+                                10), // Adjust the spacing between the icon and the text
+                        Text(value),
+                      ],
+                    ),
                   );
                 }).toList(),
                 onChanged: (String? value) {
@@ -593,12 +652,21 @@ class _SignUpPageState extends State<SignUpPage> {
                     _selectedClass = value!;
                   });
                 },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
               ),
               SizedBox(height: 8.0),
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email ID',
+                  prefixIcon: Icon(Icons.mail),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                   hintText: 'Enter email id',
                 ),
                 keyboardType: TextInputType.emailAddress,

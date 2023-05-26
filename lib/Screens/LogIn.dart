@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login_signup/Screens/Reset_Password.dart';
 import 'SignUp.dart';
 
 void main() {
@@ -26,16 +27,18 @@ class LoginApp extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('assets/images/bg.png'),
-                    fit: BoxFit.cover,
-                    colorFilter:
-                        ColorFilter.mode(Colors.black45, BlendMode.darken)),
+                  image: AssetImage('assets/images/bg.png'),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black45,
+                    BlendMode.darken,
+                  ),
+                ),
               ),
             ),
             ColorFiltered(
               colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(
-                    0.3), // Adjust the opacity value to reduce exposure
+                Colors.black.withOpacity(0.3),
                 BlendMode.srcOver,
               ),
               child: Container(
@@ -53,10 +56,16 @@ class LoginApp extends StatelessWidget {
                         ),
                         decoration: InputDecoration(
                           labelText: 'Username',
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
                           labelStyle: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
+                          ),
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -71,10 +80,16 @@ class LoginApp extends StatelessWidget {
                         ),
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
                           labelStyle: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
+                          ),
+                          prefixIcon: Icon(
+                            Icons.lock,
+                            color: Colors.white,
                           ),
                         ),
                         obscureText: true,
@@ -247,31 +262,55 @@ class LoginApp extends StatelessWidget {
                       ),
                       child: Text('Login as Admin'),
                     ),
-                    SizedBox(height: 100.0),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.0),
-                      width: double.infinity,
-                      child: ElevatedButton(
+                    SizedBox(height: 0.0),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
                         onPressed: () {
-                          // Sign up button action
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignUpScreen(),
+                              builder: (context) => ResetPasswordPage(),
                             ),
                           );
                         },
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.underline,
                           ),
                         ),
-                        child: Text('Sign Up'),
                       ),
-                    )
+                    ),
+                    SizedBox(height: 35.0),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 4.0),
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Sign up button action
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SignUpScreen(),
+                              ),
+                            );
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                            ),
+                          ),
+                          child: Text('Sign Up'),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
