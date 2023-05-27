@@ -302,7 +302,8 @@ class _SignUpPageState extends State<SignUpPage> {
       'teacher_name': _teachernameController.text,
       'mobile_number': _teachermobileController.text,
       'email_id': _teacheremailController.text,
-      'teacher_password': teacherpassword
+      'teacher_password': teacherpassword,
+      // 'teacher_class':
     };
     dbRef.push().set(users);
 
