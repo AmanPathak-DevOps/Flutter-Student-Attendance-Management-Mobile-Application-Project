@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:random_string/random_string.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,9 @@ class _SignUpPageState extends State<SignUpPage> {
   late String _selectedGender;
 
   late DatabaseReference dbRef, dbRef2;
+
+  final FirebaseFirestore _firestoreteachers = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestorestudents = FirebaseFirestore.instance;
 
   final List<String> _classOptions = [
     '1st',
@@ -193,10 +197,6 @@ class _SignUpPageState extends State<SignUpPage> {
       );
       return false;
     }
-
-    // Perform additional validation for mobile number
-    // ...
-
     if (email.isEmpty) {
       showDialog(
         context: context,
@@ -217,11 +217,6 @@ class _SignUpPageState extends State<SignUpPage> {
       );
       return false;
     }
-
-    // Perform additional validation for email format
-    // ...
-
-    // All student details are valid
     return true;
   }
 
@@ -299,6 +294,27 @@ class _SignUpPageState extends State<SignUpPage> {
     return true;
   }
 
+  void teacherdata_insertion(teacherId, teacherpassword) async {
+    // Realtime Database Insertion
+    Map<String, String> users = {
+      'Teacher_ID': teacherId,
+      'teacher_name': _teachernameController.text,
+      'mobile_number': _teachermobileController.text,
+      'email_id': _teacheremailController.text,
+      'teacher_password': teacherpassword
+    };
+    dbRef.push().set(users);
+
+    // Firestore Datbase Insertion
+    await _firestoreteachers.collection('Staff_Details').add({
+      'Teacher_ID': teacherId,
+      'teacher_name': _teachernameController.text,
+      'mobile_number': _teachermobileController.text,
+      'email_id': _teacheremailController.text,
+      'teacher_password': teacherpassword,
+    });
+  }
+
   bool _submitSignUpForm() {
     if (_selectedRole == 'Teacher') {
       if (_validateTeacherDetails()) {
@@ -307,6 +323,13 @@ class _SignUpPageState extends State<SignUpPage> {
           barrierDismissible:
               true, // Prevent dismissing the dialog on tap outside
           builder: (BuildContext context) {
+            String teacherId = generateTeacherId();
+            String teacherpassword =
+                generateTeacherPassword(_teachernameController.text);
+            teacherdata_insertion(teacherId, teacherpassword);
+            Future.delayed(Duration(seconds: 2)).then((_) {
+              Navigator.of(context).pop(); // Close the dialog
+            });
             return AlertDialog(
               title: Text('Signing Up'),
               content: Column(
@@ -320,22 +343,6 @@ class _SignUpPageState extends State<SignUpPage> {
             );
           },
         );
-        // Perform signup logic for teacher
-        // ...
-        // Dismiss the popup
-        Navigator.pop(context);
-        String teacherId = generateTeacherId();
-        String teacherpassword =
-            generateTeacherPassword(_teachernameController.text);
-        Map<String, String> users = {
-          'Teacher_ID': teacherId,
-          'teacher_name': _teachernameController.text,
-          'mobile_number': _teachermobileController.text,
-          'email_id': _teacheremailController.text,
-          'teacher_password': teacherpassword
-        };
-        dbRef.push().set(users);
-        // Navigate to the LoginApp
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoginApp()),
@@ -348,12 +355,20 @@ class _SignUpPageState extends State<SignUpPage> {
           barrierDismissible:
               true, // Prevent dismissing the dialog on tap outside
           builder: (BuildContext context) {
+            String studentId = generateStudentId();
+            String studentpassword =
+                generateStudentPassword(_studentnameController.text);
+            studentdata_insertion(studentId, studentpassword);
+            Future.delayed(Duration(seconds: 2)).then((_) {
+              Navigator.of(context).pop(); // Close the dialog
+            });
+
             return AlertDialog(
               title: Text('Signing Up'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(), // Show circular progress indicator
+                  // Show circular progress indicator
                   SizedBox(height: 16.0),
                   Text('Please wait...'),
                 ],
@@ -361,31 +376,6 @@ class _SignUpPageState extends State<SignUpPage> {
             );
           },
         );
-        // Perform signup logic for student
-        // ...
-
-        // Dismiss the popup
-        Navigator.pop(context);
-        String studentId = generateStudentId();
-        String studentpassword =
-            generateStudentPassword(_studentnameController.text);
-        Map<String, String> users = {
-          'student_id': studentId,
-          'student_name': _studentnameController.text,
-          'roll_number': _studentrollNumberController.text,
-          'father_name': _studentfatherNameController.text,
-          'Date_of_birth': _studentdateOfBirthController.text,
-          'Gender': _selectedGender,
-          'Mobile_number': _studentmobileController.text,
-          'Email_ID': _studentemailController.text,
-          'mobile_number': _studentmobileController.text,
-          'Class': _selectedClass,
-          'email_id': _studentemailController.text,
-          'student_password': studentpassword
-        };
-
-        dbRef2.push().set(users);
-        // Navigate to the LoginApp
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoginApp()),
@@ -394,6 +384,55 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     return false;
+  }
+
+  void studentdata_insertion(studentId, studentpassword) async {
+// Realtime Database Insertion
+    Map<String, String> users = {
+      'student_id': studentId,
+      'student_name': _studentnameController.text,
+      'roll_number': _studentrollNumberController.text,
+      'father_name': _studentfatherNameController.text,
+      'Date_of_birth': _studentdateOfBirthController.text,
+      'Gender': _selectedGender,
+      'Mobile_number': _studentmobileController.text,
+      'Email_ID': _studentemailController.text,
+      'mobile_number': _studentmobileController.text,
+      'Class': _selectedClass,
+      'email_id': _studentemailController.text,
+      'student_password': studentpassword
+    };
+
+    dbRef2.push().set(users);
+    // Firestore Datbase Insertion
+    await _firestorestudents.collection('Student_Details').add({
+      'student_id': studentId,
+      'student_name': _studentnameController.text,
+      'roll_number': _studentrollNumberController.text,
+      'father_name': _studentfatherNameController.text,
+      'Date_of_birth': _studentdateOfBirthController.text,
+      'Gender': _selectedGender,
+      'Mobile_number': _studentmobileController.text,
+      'Email_ID': _studentemailController.text,
+      'mobile_number': _studentmobileController.text,
+      'Class': _selectedClass,
+      'email_id': _studentemailController.text,
+      'student_password': studentpassword
+    });
+  }
+
+  void navigateToLogin(BuildContext context) {
+    // Store the reference to the BuildContext
+    final currentContext = context;
+
+    // Perform the asynchronous operation
+    Future.delayed(Duration(seconds: 1), () {
+      // Access the BuildContext within the callback
+      Navigator.push(
+        currentContext,
+        MaterialPageRoute(builder: (context) => LoginApp()),
+      );
+    });
   }
 
   // Generating Teacher ID
@@ -792,16 +831,12 @@ class _SignUpPageState extends State<SignUpPage> {
                   onPressed: () async {
                     bool isValid = _submitSignUpForm();
                     if (isValid) {
-                      await showDialog(
+                      showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
                           title: Text('Sign Up Successful'),
                         ),
                       );
-                      Map<String, String> students = {
-                        'name': _studentnameController.text,
-                        'roll_number': _studentrollNumberController.text
-                      };
                     }
                   },
                   child: Text('Sign Up'),
