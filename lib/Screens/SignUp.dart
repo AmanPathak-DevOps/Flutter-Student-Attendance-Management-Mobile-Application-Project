@@ -1,5 +1,6 @@
 import 'dart:math';
-
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:random_string/random_string.dart';
@@ -315,6 +316,23 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
+  void sendEmail(String recipientEmail, String subject, String body) async {
+    final smtpServer = gmail('avianvista@gmail.com', 'ykxfjsvwfhantoqu');
+
+    final message = Message()
+      ..from = Address('avianvista@gmail.com', 'Avian Vista')
+      ..recipients.add(recipientEmail)
+      ..subject = subject
+      ..text = body;
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Email sent: ${sendReport.toString()}');
+    } catch (e) {
+      print('Error sending email: $e');
+    }
+  }
+
   bool _submitSignUpForm() {
     if (_selectedRole == 'Teacher') {
       if (_validateTeacherDetails()) {
@@ -327,6 +345,17 @@ class _SignUpPageState extends State<SignUpPage> {
             String teacherpassword =
                 generateTeacherPassword(_teachernameController.text);
             teacherdata_insertion(teacherId, teacherpassword);
+            String teachername = _teachernameController.text;
+            String teachermobile = _teachermobileController.text;
+            String recipientEmail =
+                _teacheremailController.text; // Replace with appropriate field
+            String subject = 'Welcoming you to our SAM $teachername';
+            String body =
+                'Use Below details while Log In!\n ID: $teacherId\n Password: $teacherpassword\n Name: $teachername \n Mobile Number: $teachermobile\n Have A greate Day!!!\n Aman Pathak'; // Customize the message as needed
+
+            // Call the sendEmail function
+            sendEmail(recipientEmail, subject, body);
+
             Future.delayed(Duration(seconds: 2)).then((_) {
               Navigator.of(context).pop(); // Close the dialog
             });
@@ -359,6 +388,22 @@ class _SignUpPageState extends State<SignUpPage> {
             String studentpassword =
                 generateStudentPassword(_studentnameController.text);
             studentdata_insertion(studentId, studentpassword);
+            String studentname = _studentnameController.text;
+            String studentrollnumber = _studentrollNumberController.text;
+            String fathersname = _studentfatherNameController.text;
+            String dob = _studentdateOfBirthController.text;
+            String gender = _selectedGender;
+            String mobile = _studentmobileController.text;
+            String standard = _selectedClass;
+            String recipientEmail =
+                _studentemailController.text; // Replace with appropriate field
+            String subject = 'Welcoming you to our SAM $studentname';
+            String body =
+                'Use Below details while Log In!\n ID: $studentId\n Password: $studentpassword\n Name: $studentname \n Roll Number: $studentrollnumber\n Fathers Name: $fathersname\n DOB: $dob\n Gender: $gender\n Mobile Number: $mobile\n Class: $standard\n Have A greate Day!!!\n Aman Pathak'; // Customize the message as needed
+
+            // Call the sendEmail function
+            sendEmail(recipientEmail, subject, body);
+
             Future.delayed(Duration(seconds: 2)).then((_) {
               Navigator.of(context).pop(); // Close the dialog
             });
@@ -396,7 +441,6 @@ class _SignUpPageState extends State<SignUpPage> {
       'Date_of_birth': _studentdateOfBirthController.text,
       'Gender': _selectedGender,
       'Mobile_number': _studentmobileController.text,
-      'Email_ID': _studentemailController.text,
       'mobile_number': _studentmobileController.text,
       'Class': _selectedClass,
       'email_id': _studentemailController.text,

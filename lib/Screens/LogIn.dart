@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:login_signup/Screens/Reset_Password.dart';
+import 'package:login_signup/Screens/Student.dart';
 import 'SignUp.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -16,65 +17,197 @@ class LoginApp extends StatelessWidget {
 
   LoginApp({super.key});
 
-  // void login(BuildContext context) {
-  //   String userID = usernameController.text;
-  //   String password = passwordController.text;
+  void teacherlogin(BuildContext context) {
+    String userID = usernameController.text;
+    String password = passwordController.text;
 
-  //   FirebaseFirestore.instance
-  //       .collection('Staff_details')
-  //       .where('Teacher_ID', isEqualTo: userID)
-  //       .where('teacher_password', isEqualTo: password)
-  //       .get()
-  //       .then((QuerySnapshot snapshot) {
-  //     if (snapshot.docs.isNotEmpty) {
-  //       // User ID and password matched, proceed to next page
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => ResetPasswordPage(),
-  //         ),
-  //       );
-  //     } else {
-  //       // User ID and/or password did not match
-  //       showDialog(
-  //         context: context,
-  //         builder: (BuildContext context) {
-  //           return AlertDialog(
-  //             title: Text('Login Failed'),
-  //             content: Text('Invalid user ID or password.'),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () {
-  //                   Navigator.pop(context);
-  //                 },
-  //                 child: Text('OK'),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     }
-  //   }).catchError((error) {
-  //     // Error occurred while querying the database
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: Text('Error'),
-  //           content: Text('An error occurred. Please try again later.'),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //               },
-  //               child: Text('OK'),
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-  //   });
-  // }
+    FirebaseFirestore.instance
+        .collection('Staff_Details')
+        .where('Teacher_ID', isEqualTo: userID)
+        .where('teacher_password', isEqualTo: password)
+        .get()
+        .then((QuerySnapshot snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        String teacher_id = snapshot.docs[0].get('Teacher_ID');
+        String teacher_name = snapshot.docs[0].get('teacher_name');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StudentPage(
+              studentId: teacher_id,
+              studentName: teacher_name,
+            ),
+          ),
+        );
+      } else {
+        // User ID and/or password did not match
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Login Failed'),
+              content: Text('Invalid user ID or password.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }).catchError((error) {
+      // Error occurred while querying the database
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('An error occurred. Please try again later.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+  void studentlogin(BuildContext context) {
+    String st_userID = usernameController.text;
+    String st_password = passwordController.text;
+
+    FirebaseFirestore.instance
+        .collection('Student_Details')
+        .where('student_id', isEqualTo: st_userID)
+        .where('student_password', isEqualTo: st_password)
+        .get()
+        .then((QuerySnapshot snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        String studentId = snapshot.docs[0].get('student_id');
+        String student_name = snapshot.docs[0].get('student_name');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StudentPage(
+              studentId: studentId,
+              studentName: student_name,
+            ),
+          ),
+        );
+      } else {
+        // User ID and/or password did not match
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Login Failed'),
+              content: Text('Invalid user ID or password.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }).catchError((error) {
+      // Error occurred while querying the database
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('An error occurred. Please try again later.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+  void adminlogin(BuildContext context) {
+    String userID = usernameController.text;
+    String password = passwordController.text;
+
+    FirebaseFirestore.instance
+        .collection('Admin_Account')
+        .where('Admin_ID', isEqualTo: userID)
+        .where('Admin_password', isEqualTo: password)
+        .get()
+        .then((QuerySnapshot snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        String admin_id = snapshot.docs[0].get('Admin_ID');
+        String student_name = snapshot.docs[0].get('Name');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StudentPage(
+              studentId: admin_id,
+              studentName: student_name,
+            ),
+          ),
+        );
+      } else {
+        // User ID and/or password did not match
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Login Failed'),
+              content: Text('Invalid user ID or password.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }).catchError((error) {
+      // Error occurred while querying the database
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('An error occurred. Please try again later.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,48 +308,7 @@ class LoginApp extends StatelessWidget {
                     SizedBox(height: 16.0),
                     ElevatedButton(
                       onPressed: () {
-                        final username = usernameController.text;
-                        final password = passwordController.text;
-                        // Add your login logic here for teacher
-                        if (username == 'teacher' && password == 'password') {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Login Success'),
-                                content:
-                                    Text('You are logged in as a Teacher.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Invalid Credentials'),
-                                content: Text(
-                                    'Please enter valid username and password for Teacher.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
+                        teacherlogin(context);
                       },
                       style: ButtonStyle(
                         shape:
@@ -231,48 +323,7 @@ class LoginApp extends StatelessWidget {
                     SizedBox(height: 8.0),
                     ElevatedButton(
                       onPressed: () {
-                        final username = usernameController.text;
-                        final password = passwordController.text;
-                        // Add your login logic here for student
-                        if (username == 'student' && password == 'password') {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Login Success'),
-                                content:
-                                    Text('You are logged in as a student.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Invalid Credentials'),
-                                content: Text(
-                                    'Please enter valid username and password for student.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
+                        studentlogin(context);
                       },
                       style: ButtonStyle(
                         shape:
@@ -287,47 +338,7 @@ class LoginApp extends StatelessWidget {
                     SizedBox(height: 8.0),
                     ElevatedButton(
                       onPressed: () {
-                        final username = usernameController.text;
-                        final password = passwordController.text;
-                        // Add your login logic here for admin
-                        if (username == 'admin' && password == 'password') {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Login Success'),
-                                content: Text('You are logged in as an admin.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Invalid Credentials'),
-                                content: Text(
-                                    'Please enter valid username and password for admin.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
+                        adminlogin(context);
                       },
                       style: ButtonStyle(
                         shape:
