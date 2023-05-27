@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:login_signup/Screens/Reset_Password.dart';
 import 'package:login_signup/Screens/Student.dart';
+import 'package:login_signup/Screens/Teacher.dart';
 import 'SignUp.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -33,9 +34,9 @@ class LoginApp extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => StudentPage(
-              studentId: teacher_id,
-              studentName: teacher_name,
+            builder: (context) => TeacherPage(
+              teacherId: teacher_id,
+              teacherName: teacher_name,
             ),
           ),
         );
@@ -45,8 +46,8 @@ class LoginApp extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Login Failed'),
-              content: Text('Invalid user ID or password.'),
+              title: const Text('Login Failed'),
+              content: const Text('Invalid user ID or password.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -94,12 +95,14 @@ class LoginApp extends StatelessWidget {
       if (snapshot.docs.isNotEmpty) {
         String studentId = snapshot.docs[0].get('student_id');
         String student_name = snapshot.docs[0].get('student_name');
+        String student_class = snapshot.docs[0].get('Class');
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => StudentPage(
               studentId: studentId,
               studentName: student_name,
+              className: student_class,
             ),
           ),
         );
@@ -158,13 +161,14 @@ class LoginApp extends StatelessWidget {
       if (snapshot.docs.isNotEmpty) {
         String admin_id = snapshot.docs[0].get('Admin_ID');
         String student_name = snapshot.docs[0].get('Name');
+        String student_class = snapshot.docs[0].get('Class');
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => StudentPage(
-              studentId: admin_id,
-              studentName: student_name,
-            ),
+                studentId: admin_id,
+                studentName: student_name,
+                className: student_class),
           ),
         );
       } else {
