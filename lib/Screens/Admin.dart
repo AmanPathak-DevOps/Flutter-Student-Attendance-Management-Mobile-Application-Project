@@ -5,20 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class AdminPage extends StatefulWidget {
-  final String teacherId;
-  final String teacherName;
-  final String teacherClass;
-  final String studentId;
-  final String studentName;
-  final String className;
+  final String adminName;
 
-  const AdminPage(
-      {required this.teacherId,
-      required this.teacherName,
-      required this.teacherClass,
-      required this.studentId,
-      required this.studentName,
-      required this.className});
+  const AdminPage({
+    required this.adminName,
+  });
 
   @override
   _AdminPageState createState() => _AdminPageState();
@@ -41,9 +32,7 @@ class _AdminPageState extends State<AdminPage> {
       context,
       MaterialPageRoute(
         builder: (context) => AttendancePage(
-          teacherId: widget.teacherId,
-          teacherName: widget.teacherName,
-          teacherClass: widget.teacherClass,
+          adminName: widget.adminName,
           selectedDate: selectedDay,
         ),
       ),
@@ -71,7 +60,7 @@ class _AdminPageState extends State<AdminPage> {
               ),
               child: Center(
                 child: Text(
-                  widget.teacherName,
+                  widget.adminName,
                   style: const TextStyle(fontSize: 24.0, color: Colors.white),
                 ),
               ),
@@ -196,15 +185,11 @@ class _AdminPageState extends State<AdminPage> {
 }
 
 class AttendancePage extends StatefulWidget {
-  final String teacherId;
-  final String teacherName;
-  final String teacherClass;
+  final String adminName;
   final DateTime selectedDate;
 
   const AttendancePage({
-    required this.teacherId,
-    required this.teacherName,
-    required this.teacherClass,
+    required this.adminName,
     required this.selectedDate,
   });
 
@@ -236,8 +221,8 @@ class _AttendancePageState extends State<AttendancePage> {
         bool isPresent = isChecked[i];
 
         await attendanceRef.add({
-          'teacherId': widget.teacherId,
-          'teacherName': widget.teacherName,
+          // 'teacherId': widget.teacherId,
+          // 'teacherName': widget.teacherName,
           'selectedDate': widget.selectedDate,
           'studentId': studentId,
           'studentName': studentName,
@@ -255,7 +240,7 @@ class _AttendancePageState extends State<AttendancePage> {
     try {
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('Student_Details')
-          .where('Class', isEqualTo: widget.teacherClass)
+          // .where('Class', isEqualTo: widget.teacherClass) NTU
           .get();
 
       if (snapshot.docs.isNotEmpty) {

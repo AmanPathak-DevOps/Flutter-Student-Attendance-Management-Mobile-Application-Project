@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginApp(),
+      home: ResetPasswordPage(),
       // home: TeacherPage(teacherId: '456', teacherName: 'Aman'),
     );
   }

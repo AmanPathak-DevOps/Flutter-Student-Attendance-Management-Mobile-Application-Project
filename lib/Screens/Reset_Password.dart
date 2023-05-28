@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:login_signup/Screens/LogIn.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   @override
@@ -8,40 +10,147 @@ class ResetPasswordPage extends StatefulWidget {
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _mobileController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _mobileController = TextEditingController();
 
   @override
   void dispose() {
-    _usernameController.dispose();
     _emailController.dispose();
     _mobileController.dispose();
     super.dispose();
   }
 
-  void _resetPassword() {
-    if (_formKey.currentState!.validate()) {
-      // Perform password reset logic here
-      String username = _usernameController.text;
-      String email = _emailController.text;
-      String mobile = _mobileController.text;
-      print('Username: $username');
-      print('Email: $email');
-      print('Mobile: $mobile');
-      // Reset password logic goes here
+  void sendEmail(String recipientEmail, String subject, String body) async {
+    final smtpServer = gmail('avianvista@gmail.com', 'ykxfjsvwfhantoqu');
+
+    final message = Message()
+      ..from = Address('avianvista@gmail.com', 'Avian Vista')
+      ..recipients.add(recipientEmail)
+      ..subject = subject
+      ..text = body;
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Email sent: ${sendReport.toString()}');
+    } catch (e) {
+      print('Error sending email: $e');
     }
   }
 
-  String? _validateAlphanumeric(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a username';
+  void _resetPassword() async {
+    if (_formKey.currentState!.validate()) {
+      String email = _emailController.text;
+      String mobile = _mobileController.text;
+
+      // Query Student_Details collection
+      QuerySnapshot studentSnapshot = await FirebaseFirestore.instance
+          .collection('Student_Details')
+          .where('mobile_number', isEqualTo: mobile)
+          .where('email_id', isEqualTo: email)
+          .get();
+
+      QuerySnapshot staffSnapshot = await FirebaseFirestore.instance
+          .collection('Staff_Details')
+          .where('mobile_number', isEqualTo: mobile)
+          .where('email_id', isEqualTo: email)
+          .get();
+
+      String recipientEmail = email; // Replace with appropriate field
+      String subject;
+      String body;
+      // Check if any matching document is found in Student_Details collection
+      if (studentSnapshot.size > 0) {
+        // print('Student Found');
+        FirebaseFirestore.instance
+            .collection('Student_Details')
+            .where('mobile_number', isEqualTo: mobile)
+            .where('email_id', isEqualTo: email)
+            .get()
+            .then((QuerySnapshot snapshot) {
+          if (snapshot.docs.isNotEmpty) {
+            String studentId = studentSnapshot.docs[0].get('student_id');
+            String studentpassword =
+                studentSnapshot.docs[0].get('student_password');
+            String studentName = studentSnapshot.docs[0].get('student_name');
+            subject = 'Request Accepted $studentName';
+            body =
+                'Use Below details while Log In!\n ID: $studentId\n Password: $studentpassword\n\n\nHave A Great Day!\n\nAman Pathak';
+            sendEmail(recipientEmail, subject, body);
+          }
+        });
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Password Reset'),
+              content: Text('Check your Email'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else if (staffSnapshot.size > 0) {
+        FirebaseFirestore.instance
+            .collection('Staff_Details')
+            .where('mobile_number', isEqualTo: mobile)
+            .where('email_id', isEqualTo: email)
+            .get()
+            .then((QuerySnapshot snapshot) {
+          if (snapshot.docs.isNotEmpty) {
+            String teacherId = staffSnapshot.docs[0].get('Teacher_ID');
+            String teacherpassword =
+                staffSnapshot.docs[0].get('teacher_password');
+            String teacherName = staffSnapshot.docs[0].get('teacher_name');
+            subject = 'Request Accepted $teacherName';
+            body =
+                'Use Below details while Log In!\n ID: $teacherId\n Password: $teacherpassword\n\n\nHave A Great Day!\n\nAman Pathak';
+            sendEmail(recipientEmail, subject, body);
+          }
+        });
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Password Reset'),
+              content: Text('Check your Email'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Invalid Details'),
+              content: Text(
+                  'The entered email and mobile do not match any account.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
-    RegExp alphanumeric = RegExp(r'^[a-zA-Z0-9]+$');
-    if (!alphanumeric.hasMatch(value)) {
-      return 'Username must be alphanumeric';
-    }
-    return null;
   }
 
   String? _validateEmail(String? value) {
@@ -108,18 +217,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         TextFormField(
-                          controller: _usernameController,
-                          decoration: InputDecoration(
-                            labelText: 'Username',
-                            prefixIcon: Icon(Icons.person),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                          ),
-                          validator: _validateAlphanumeric,
-                        ),
-                        SizedBox(height: 10.0),
-                        TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
                             labelText: 'Email',
@@ -153,23 +250,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             ),
                             primary: Colors.white,
                             onPrimary: Colors.black,
-                          ),
-                        ),
-                        SizedBox(height: 10.0),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginApp(),
-                              ),
-                            );
-                          },
-                          child: Text('Redirect to LogIn'),
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
                           ),
                         ),
                       ],

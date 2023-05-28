@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
 
 class TeacherPage extends StatefulWidget {
   final String teacherId;
@@ -29,19 +30,54 @@ class _TeacherPageState extends State<TeacherPage> {
     });
   }
 
-  void _openAttendancePage(DateTime selectedDay) {
-    // Navigate to the AttendancePage with selected date and other information
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AttendancePage(
-          teacherId: widget.teacherId,
-          teacherName: widget.teacherName,
-          teacherClass: widget.teacherClass,
-          selectedDate: selectedDay,
-        ),
-      ),
-    );
+  void _openAttendancePage(DateTime selectedDay) async {
+    try {
+      CollectionReference attendanceRef =
+          FirebaseFirestore.instance.collection('Attendance_Status');
+
+      String formattedDate = DateFormat('MM-dd-yy').format(selectedDay);
+
+      QuerySnapshot snapshot = await attendanceRef
+          .where('class', isEqualTo: widget.teacherClass)
+          .where('selectedDate', isEqualTo: formattedDate)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Attendance Already Submitted'),
+              content: Text(
+                  'Attendance has already been submitted for the $formattedDate.'),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AttendancePage(
+              teacherId: widget.teacherId,
+              teacherName: widget.teacherName,
+              teacherClass: widget.teacherClass,
+              selectedDate: selectedDay,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error fetching attendance data: $e');
+    }
   }
 
   @override
@@ -156,10 +192,34 @@ class _TeacherPageState extends State<TeacherPage> {
                       _selectedDate.day == day.day;
                 },
                 onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDate = selectedDay;
-                  });
-                  _openAttendancePage(selectedDay); // Open AttendancePage
+                  if (selectedDay.year == DateTime.now().year &&
+                      selectedDay.month == DateTime.now().month &&
+                      selectedDay.day == DateTime.now().day) {
+                    setState(() {
+                      _selectedDate = selectedDay;
+                    });
+
+                    _openAttendancePage(selectedDay); // Open AttendancePage
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Contact Admin'),
+                          content: Text(
+                              'Please contact the admin for attendance on a different date.'),
+                          actions: [
+                            TextButton(
+                              child: Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 onPageChanged: (focusedDay) {
                   setState(() {
@@ -229,10 +289,17 @@ class _AttendancePageState extends State<AttendancePage> {
         String rollNumber = studentRollNumbers[i];
         bool isPresent = isChecked[i];
 
+        DateTime currentDateTime = DateTime.now();
+        DateTime istDateTime = currentDateTime.toLocal();
+        String formattedDate = DateFormat('MM-dd-yy').format(istDateTime);
+        String formattedTime = DateFormat('HH:mm:ss').format(istDateTime);
+
         await attendanceRef.add({
           'teacherId': widget.teacherId,
+          'class': widget.teacherClass,
           'teacherName': widget.teacherName,
-          'selectedDate': widget.selectedDate,
+          'selectedDate': formattedDate,
+          'selectedTime': formattedTime,
           'studentId': studentId,
           'studentName': studentName,
           'rollNumber': rollNumber,
@@ -245,7 +312,6 @@ class _AttendancePageState extends State<AttendancePage> {
   }
 
   void fetchStudentData() async {
-    // String teacherClass = teacherClass;
     try {
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('Student_Details')
@@ -314,8 +380,8 @@ class _AttendancePageState extends State<AttendancePage> {
                 builder: (context) {
                   return AlertDialog(
                     title: Text('Submit Attendance'),
-                    content: Text(
-                        'Are you sure you want to submit the attendance? $widget.teacherClass'),
+                    content:
+                        Text('Are you sure you want to submit the attendance?'),
                     actions: [
                       TextButton(
                         child: Text('Cancel'),

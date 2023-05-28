@@ -162,22 +162,12 @@ class LoginApp extends StatelessWidget {
         .get()
         .then((QuerySnapshot snapshot) {
       if (snapshot.docs.isNotEmpty) {
-        String admin_id = snapshot.docs[0].get('Admin_ID');
-        String student_name = snapshot.docs[0].get('Name');
-        String student_class = snapshot.docs[0].get('Class');
-        String teacher_id = snapshot.docs[0].get('Teacher_ID');
-        String teacher_name = snapshot.docs[0].get('teacher_name');
-        String teacher_class = snapshot.docs[0].get('teacher_class');
+        String admin_name = snapshot.docs[0].get('Name');
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => AdminPage(
-              studentId: admin_id,
-              studentName: student_name,
-              className: student_class,
-              teacherId: teacher_id,
-              teacherName: teacher_name,
-              teacherClass: teacher_class,
+              adminName: admin_name,
             ),
           ),
         );
