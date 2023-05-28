@@ -301,6 +301,7 @@ class _SignUpPageState extends State<SignUpPage> {
       'Teacher_ID': teacherId,
       'teacher_name': _teachernameController.text,
       'mobile_number': _teachermobileController.text,
+      'teacher_class': _selectedClass,
       'email_id': _teacheremailController.text,
       'teacher_password': teacherpassword,
       // 'teacher_class':
@@ -312,6 +313,7 @@ class _SignUpPageState extends State<SignUpPage> {
       'Teacher_ID': teacherId,
       'teacher_name': _teachernameController.text,
       'mobile_number': _teachermobileController.text,
+      'teacher_class': _selectedClass,
       'email_id': _teacheremailController.text,
       'teacher_password': teacherpassword,
     });
@@ -638,6 +640,38 @@ class _SignUpPageState extends State<SignUpPage> {
                   // ...
                   return null;
                 },
+              ),
+              SizedBox(height: 8.0),
+              DropdownButtonFormField<String>(
+                isExpanded: true,
+                value: _selectedClass,
+                items: _classOptions.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.school,
+                          // Add any additional styling properties for the icon if needed
+                        ),
+                        SizedBox(
+                            width:
+                                10), // Adjust the spacing between the icon and the text
+                        Text(value),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedClass = value!;
+                  });
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
               ),
               SizedBox(height: 8.0),
               TextFormField(

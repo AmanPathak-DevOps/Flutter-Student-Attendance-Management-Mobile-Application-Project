@@ -4,21 +4,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class TeacherPage extends StatefulWidget {
+class AdminPage extends StatefulWidget {
   final String teacherId;
   final String teacherName;
   final String teacherClass;
+  final String studentId;
+  final String studentName;
+  final String className;
 
-  const TeacherPage(
+  const AdminPage(
       {required this.teacherId,
       required this.teacherName,
-      required this.teacherClass});
+      required this.teacherClass,
+      required this.studentId,
+      required this.studentName,
+      required this.className});
 
   @override
-  _TeacherPageState createState() => _TeacherPageState();
+  _AdminPageState createState() => _AdminPageState();
 }
 
-class _TeacherPageState extends State<TeacherPage> {
+class _AdminPageState extends State<AdminPage> {
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
   bool _showCalendar = false;

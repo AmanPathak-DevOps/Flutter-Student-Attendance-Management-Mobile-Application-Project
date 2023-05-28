@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:login_signup/Screens/Admin.dart';
 import 'package:login_signup/Screens/Reset_Password.dart';
 import 'package:login_signup/Screens/Student.dart';
 import 'package:login_signup/Screens/Teacher.dart';
@@ -31,12 +32,14 @@ class LoginApp extends StatelessWidget {
       if (snapshot.docs.isNotEmpty) {
         String teacher_id = snapshot.docs[0].get('Teacher_ID');
         String teacher_name = snapshot.docs[0].get('teacher_name');
+        String teacher_class = snapshot.docs[0].get('teacher_class');
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => TeacherPage(
               teacherId: teacher_id,
               teacherName: teacher_name,
+              teacherClass: teacher_class,
             ),
           ),
         );
@@ -162,13 +165,20 @@ class LoginApp extends StatelessWidget {
         String admin_id = snapshot.docs[0].get('Admin_ID');
         String student_name = snapshot.docs[0].get('Name');
         String student_class = snapshot.docs[0].get('Class');
+        String teacher_id = snapshot.docs[0].get('Teacher_ID');
+        String teacher_name = snapshot.docs[0].get('teacher_name');
+        String teacher_class = snapshot.docs[0].get('teacher_class');
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => StudentPage(
-                studentId: admin_id,
-                studentName: student_name,
-                className: student_class),
+            builder: (context) => AdminPage(
+              studentId: admin_id,
+              studentName: student_name,
+              className: student_class,
+              teacherId: teacher_id,
+              teacherName: teacher_name,
+              teacherClass: teacher_class,
+            ),
           ),
         );
       } else {
