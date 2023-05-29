@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:login_signup/Screens/TeacherProfilePage.dart';
 
 class TeacherPage extends StatefulWidget {
   final String teacherId;
@@ -135,30 +136,41 @@ class _TeacherPageState extends State<TeacherPage> {
                   ],
                 ),
               ),
-              Container(
-                width: 170.0,
-                height: 200.0,
-                margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.account_circle,
-                      size: 60.0,
-                      color: Colors.white,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProfilePage(teacherId: widget.teacherId),
                     ),
-                    const SizedBox(height: 10.0),
-                    const Text(
-                      'Profile',
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
-                    ),
-                  ],
+                  );
+                },
+                child: Container(
+                  width: 170.0,
+                  height: 200.0,
+                  margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.account_circle,
+                        size: 60.0,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 10.0),
+                      const Text(
+                        'Profile',
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              )
             ],
           ),
           const SizedBox(height: 20.0),

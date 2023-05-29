@@ -48,6 +48,7 @@ dependencies:
   permission_handler: ^10.2.0
   open_file: ^3.0.3
   flutter_pdfview: ^1.0.0
+  random_avatar: ^0.0.8
 
 dev_dependencies:
   flutter_test:
