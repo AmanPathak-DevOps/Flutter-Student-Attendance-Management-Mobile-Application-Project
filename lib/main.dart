@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_signup/Screens/LogIn.dart';
-import 'package:login_signup/Screens/SignUp.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:login_signup/Screens/Teacher.dart';
-import 'Screens/Reset_Password.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ResetPasswordPage(),
+      home: LoginApp(),
       // home: TeacherPage(teacherId: '456', teacherName: 'Aman'),
     );
   }
