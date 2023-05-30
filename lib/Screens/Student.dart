@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:login_signup/Screens/Complaint.dart';
 
 class StudentPage extends StatefulWidget {
   final String studentId;
@@ -20,10 +21,10 @@ class StudentPage extends StatefulWidget {
       required this.className});
 
   @override
-  _TeacherPageState createState() => _TeacherPageState();
+  _StudentPageState createState() => _StudentPageState();
 }
 
-class _TeacherPageState extends State<StudentPage> {
+class _StudentPageState extends State<StudentPage> {
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
   bool _showCalendar = false;
@@ -79,28 +80,42 @@ class _TeacherPageState extends State<StudentPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 170.0,
-                height: 200.0,
-                margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.report,
-                      size: 60.0,
-                      color: Colors.white,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ComplaintPage(
+                        studentId: widget.studentId,
+                        className: widget.className,
+                        studentName: widget.studentName,
+                      ),
                     ),
-                    const SizedBox(height: 10.0),
-                    const Text(
-                      'Complaint',
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
-                    ),
-                  ],
+                  );
+                },
+                child: Container(
+                  width: 170.0,
+                  height: 200.0,
+                  margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.report,
+                        size: 60.0,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 10.0),
+                      const Text(
+                        'Complaint',
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               GestureDetector(
@@ -295,7 +310,7 @@ class _ViewAttendancePage extends State<ViewAttendancePage> {
             height: 8.0,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isPresent ? Colors.green : Colors.red,
+              color: isPresent ? Colors.green : Colors.green,
             ),
           );
         },

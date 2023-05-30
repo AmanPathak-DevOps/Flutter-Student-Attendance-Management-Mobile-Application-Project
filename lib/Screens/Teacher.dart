@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:login_signup/Screens/TeacherProfilePage.dart';
+import 'package:login_signup/Screens/ComplaintView.dart';
 
 class TeacherPage extends StatefulWidget {
   final String teacherId;
@@ -112,28 +113,39 @@ class _TeacherPageState extends State<TeacherPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 170.0,
-                height: 200.0,
-                margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.report,
-                      size: 60.0,
-                      color: Colors.white,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ComplaintViewListPage(
+                          teacherClass: widget.teacherClass),
                     ),
-                    const SizedBox(height: 10.0),
-                    const Text(
-                      'Complaint',
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
-                    ),
-                  ],
+                  );
+                },
+                child: Container(
+                  width: 170.0,
+                  height: 200.0,
+                  margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.report,
+                        size: 60.0,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 10.0),
+                      const Text(
+                        'View Complaints',
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               GestureDetector(
@@ -417,6 +429,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                   TextButton(
                                     child: Text('OK'),
                                     onPressed: () {
+                                      Navigator.of(context).pop();
                                       Navigator.of(context).pop();
                                     },
                                   ),

@@ -3,6 +3,9 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
+import 'package:login_signup/Screens/AdminProfile.dart';
+import 'package:login_signup/Screens/ComplaintViewAll.dart';
 
 class AdminPage extends StatefulWidget {
   final String adminName;
@@ -70,54 +73,75 @@ class _AdminPageState extends State<AdminPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 170.0,
-                height: 200.0,
-                margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.report,
-                      size: 60.0,
-                      color: Colors.white,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ComplaintViewListAllPage(),
                     ),
-                    const SizedBox(height: 10.0),
-                    const Text(
-                      'Complaint',
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: 170.0,
-                height: 200.0,
-                margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.account_circle,
-                      size: 60.0,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(height: 10.0),
-                    const Text(
-                      'Profile',
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
-                    ),
-                  ],
+                  );
+                },
+                child: Container(
+                  width: 170.0,
+                  height: 200.0,
+                  margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.report,
+                        size: 60.0,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 10.0),
+                      const Text(
+                        'View Complaints',
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AdminProfile(adminName: widget.adminName),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 170.0,
+                  height: 200.0,
+                  margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.account_circle,
+                        size: 60.0,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 10.0),
+                      const Text(
+                        'Profile',
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
           const SizedBox(height: 20.0),
@@ -215,19 +239,36 @@ class _AttendancePageState extends State<AttendancePage> {
       CollectionReference attendanceRef =
           FirebaseFirestore.instance.collection('Attendance_Status');
       for (int i = 0; i < studentNames.length; i++) {
-        String studentName = studentNames[i];
-        String studentId = studentIds[i];
-        String rollNumber = studentRollNumbers[i];
         bool isPresent = isChecked[i];
 
+        if (!isPresent) {
+          continue; // Skip if attendance is not taken for this student
+        }
+
+        String studentId = studentIds[i];
+        String rollNumber = studentRollNumbers[i];
+        String formattedDate =
+            DateFormat('MM-dd-yy').format(widget.selectedDate);
+        String formattedTime = DateFormat('HH:mm:ss').format(DateTime.now());
+
+        QuerySnapshot querySnapshot = await attendanceRef
+            .where('studentId', isEqualTo: studentId)
+            .where('selectedDate', isEqualTo: formattedDate)
+            .limit(1)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          // Attendance for this student on the selected date already exists
+          continue; // Skip updating attendance
+        }
+
         await attendanceRef.add({
-          // 'teacherId': widget.teacherId,
-          // 'teacherName': widget.teacherName,
-          'selectedDate': widget.selectedDate,
+          'selectedDate': formattedDate,
+          'selectedTime': formattedTime,
           'studentId': studentId,
-          'studentName': studentName,
+          'studentName': studentNames[i],
           'rollNumber': rollNumber,
-          'isPresent': isPresent,
+          'isPresent': true,
         });
       }
     } catch (e) {
@@ -236,12 +277,9 @@ class _AttendancePageState extends State<AttendancePage> {
   }
 
   void fetchStudentData() async {
-    // String teacherClass = teacherClass;
     try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('Student_Details')
-          // .where('Class', isEqualTo: widget.teacherClass) NTU
-          .get();
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('Student_Details').get();
 
       if (snapshot.docs.isNotEmpty) {
         List<String> names = [];
@@ -305,8 +343,8 @@ class _AttendancePageState extends State<AttendancePage> {
                 builder: (context) {
                   return AlertDialog(
                     title: Text('Submit Attendance'),
-                    content: Text(
-                        'Are you sure you want to submit the attendance? $widget.teacherClass'),
+                    content:
+                        Text('Are you sure you want to submit the attendance?'),
                     actions: [
                       TextButton(
                         child: Text('Cancel'),
@@ -331,6 +369,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                     child: Text('OK'),
                                     onPressed: () {
                                       Navigator.of(context).pop();
+                                      Navigator.of(context).pop();
                                     },
                                   ),
                                 ],
@@ -347,62 +386,64 @@ class _AttendancePageState extends State<AttendancePage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Container(
-            color: Colors.grey[200],
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: Text(
-                'Selected Date: $day-$month-$year',
-                style: TextStyle(fontSize: 20.0),
+      body: Container(
+        color: Colors.grey[200], // Background color for the entire page
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Text(
+                  'Selected Date: $day-$month-$year',
+                  style: TextStyle(fontSize: 20.0),
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: studentNames.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  color: cardColors[index],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Text(
-                        studentRollNumbers[index],
-                        style: TextStyle(fontSize: 16.0),
+            Expanded(
+              child: ListView.builder(
+                itemCount: studentNames.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    color: cardColors[index],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          studentRollNumbers[index],
+                          style: TextStyle(fontSize: 16.0),
+                        ),
                       ),
-                    ),
-                    title: Text(
-                      studentNames[index],
-                      style: TextStyle(fontSize: 20.0),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                    trailing: Checkbox(
-                      value: isChecked[index],
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked[index] = value!;
-                        });
-                      },
-                      fillColor: MaterialStateProperty.resolveWith<Color?>(
-                        (states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Colors.green;
-                          }
-                          return Colors.red;
+                      title: Text(
+                        studentNames[index],
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      trailing: Checkbox(
+                        value: isChecked[index],
+                        onChanged: (value) {
+                          setState(() {
+                            isChecked[index] = value!;
+                          });
                         },
+                        fillColor: MaterialStateProperty.resolveWith<Color?>(
+                          (states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Colors.green;
+                            }
+                            return Colors.red;
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
