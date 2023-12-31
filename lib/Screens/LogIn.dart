@@ -11,7 +11,7 @@ void main() {
   runApp(LoginApp());
 }
 
-// ignore: must_be_immutable
+// ignore: must_be_immutables
 class LoginApp extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
